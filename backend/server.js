@@ -3,25 +3,52 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 require('dotenv').config();
 
-const app = express();
+const allowedOrigins = [
 
-app.use(cors());
-app.use(express.json());
+  'http://localhost:4200',
 
-mongoose.connect(process.env.MONGO_URI)
-.then(() => console.log('MongoDB conectado 🚀'))
-.catch(err => console.log(err));
+  process.env.FRONTEND_URL
+];
 
-app.get('/', (req, res) => {
-    res.send('API funcionando 🚀');
-});
+app.use(cors({
 
-app.use('/api/proyecciones',
-    require('./routes/proyeccion.routes')
-);
+  origin: function (
+    origin,
+    callback
+  ) {
 
-const PORT = process.env.PORT || 4000;
+    if (
+      !origin ||
+      allowedOrigins.includes(origin)
+    ) {
 
-app.listen(PORT, () => {
-    console.log(`Servidor corriendo en puerto ${PORT}`);
+      callback(null, true);
+
+    } else {
+
+      callback(
+        new Error(
+          'No permitido por CORS'
+        )
+      );
+    }
+  }
+}));
+mongoose.connect(
+  process.env.MONGO_URI
+)
+
+.then(() => {
+
+  console.log(
+    'MongoDB conectado 🚀'
+  );
+})
+
+.catch(err => {
+
+  console.error(
+    'Error MongoDB:',
+    err
+  );
 });
