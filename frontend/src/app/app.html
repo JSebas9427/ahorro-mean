@@ -1,0 +1,697 @@
+<h1>
+  EJERCICIO 9 -
+  Proyección Detallada
+  de Ahorro Personal
+</h1>
+
+<hr>
+<div class="dashboard">
+
+  <div class="card-kpi">
+
+    <h3>
+      Registros
+    </h3>
+
+    <p>
+      {{ totalRegistros }}
+    </p>
+
+  </div>
+
+  <div class="card-kpi">
+
+    <h3>
+      Cumplen meta
+    </h3>
+
+    <p>
+      {{ cumplenMeta }}
+    </p>
+
+  </div>
+
+  <div class="card-kpi">
+
+    <h3>
+      Promedio ahorro
+    </h3>
+
+    <p>
+
+      {{
+  promedioAhorro
+  |
+  currency:
+  'COP'
+}}
+
+    </p>
+
+  </div>
+
+  <div class="card-kpi">
+
+    <h3>
+      Mayor ahorro
+    </h3>
+
+    <p>
+
+      {{
+  mayorAhorro
+  |
+  currency:
+  'COP'
+}}
+
+    </p>
+
+  </div>
+
+  <div class="card-kpi">
+
+    <h3>
+      Cumplen %
+    </h3>
+
+    <p>
+
+      {{
+        porcentajeCumplen
+      }}%
+
+    </p>
+
+  </div>
+
+</div>
+<h2>
+  Datos de entrada
+</h2>
+
+<form [formGroup]="formulario">
+
+  <div>
+
+    <label>
+      Nombre
+    </label>
+
+    <input type="text" formControlName="nombre">
+    <div *ngIf="
+    formulario.get('nombre')
+    ?.touched
+  ">
+
+      <small *ngIf="
+      formulario
+      .get('nombre')
+      ?.errors?.['required']
+    ">
+
+        El nombre es obligatorio
+
+      </small>
+
+      <small *ngIf="
+      formulario
+      .get('nombre')
+      ?.errors?.['minlength']
+    ">
+
+        Debe tener mínimo 3 letras
+
+      </small>
+
+    </div>
+
+  </div>
+
+  <br>
+
+  <div>
+
+    <label>
+      Ahorro mensual
+    </label>
+
+    <input type="number" formControlName="ahorroMensual">
+    <div *ngIf="
+    formulario
+    .get('ahorroMensual')
+    ?.touched
+  ">
+
+      <small *ngIf="
+      formulario
+      .get('ahorroMensual')
+      ?.errors?.['required']
+    ">
+
+        El ahorro mensual es obligatorio
+
+      </small>
+
+      <small *ngIf="
+      formulario
+      .get('ahorroMensual')
+      ?.errors?.['min']
+    ">
+
+        Debe ser mayor a 0
+
+      </small>
+
+    </div>
+
+  </div>
+
+  <br>
+
+  <div>
+
+    <label>
+      Meses
+    </label>
+
+    <input type="number" formControlName="meses">
+    <div *ngIf="
+    formulario
+    .get('meses')
+    ?.touched
+  ">
+
+      <small *ngIf="
+      formulario
+      .get('meses')
+      ?.errors?.['required']
+    ">
+
+        Los meses son obligatorios
+
+      </small>
+
+      <small *ngIf="
+      formulario
+      .get('meses')
+      ?.errors?.['min']
+    ">
+
+        Deben ser mayores a 0
+
+      </small>
+
+    </div>
+  </div>
+
+  <br>
+
+  <div>
+
+    <label>
+      Meta de ahorro
+    </label>
+
+    <input type="number" formControlName="meta">
+    <div *ngIf="
+    formulario
+    .get('meta')
+    ?.touched
+  ">
+
+      <small *ngIf="
+      formulario
+      .get('meta')
+      ?.errors?.['required']
+    ">
+
+        La meta es obligatoria
+
+      </small>
+
+      <small *ngIf="
+      formulario
+      .get('meta')
+      ?.errors?.['min']
+    ">
+
+        Debe ser mayor a 0
+
+      </small>
+
+    </div>
+
+  </div>
+
+  <br>
+
+  <div>
+
+    <label>
+      Gastos fijos
+    </label>
+
+    <input type="number" formControlName="gastosFijos">
+    <div *ngIf="
+    formulario
+    .get('gastosFijos')
+    ?.touched
+  ">
+
+      <small *ngIf="
+      formulario
+      .get('gastosFijos')
+      ?.errors?.['min']
+    ">
+
+        No puede ser negativo
+
+      </small>
+
+    </div>
+
+  </div>
+
+  <br>
+
+  <div>
+
+    <label>
+      Gastos variables
+    </label>
+
+    <input type="number" formControlName="gastosVariables">
+    <div *ngIf="
+    formulario
+    .get('gastosVariables')
+    ?.touched
+  ">
+
+      <small *ngIf="
+      formulario
+      .get('gastosVariables')
+      ?.errors?.['min']
+    ">
+
+        No puede ser negativo
+
+      </small>
+
+    </div>
+
+  </div>
+
+  <br>
+
+  <button type="button" (click)="calcularProyeccion()" [disabled]="formulario.invalid">
+
+    Calcular proyección
+
+  </button>
+  <br>
+  <br>
+
+  <button type="button" (click)="guardarProyeccion()" [disabled]="formulario.invalid">
+
+    Guardar proyección
+
+  </button>
+  <br>
+  <br>
+
+  <button *ngIf="modoEdicion" type="button" (click)="actualizarProyeccion()" [disabled]="formulario.invalid">
+
+    Actualizar proyección
+
+  </button>
+
+</form>
+
+<hr>
+
+
+<div class="resultados">
+
+  <h2>
+    Resultados
+  </h2>
+
+  <p
+    class="resultado-item"
+  >
+
+    <strong>
+      Ahorro total:
+    </strong>
+
+    {{
+      ahorroTotal
+      | currency:'COP'
+    }}
+
+  </p>
+
+  <p
+    class="resultado-item"
+  >
+
+    <strong>
+      Diferencia:
+    </strong>
+
+    {{
+      diferenciaMeta
+      | currency:'COP'
+    }}
+
+  </p>
+
+  <p
+    class="resultado-item"
+  >
+
+    <strong>
+      ¿Cumple meta?
+    </strong>
+
+    <span
+      *ngIf="cumpleMeta"
+    >
+      ✅ Sí
+    </span>
+
+    <span
+      *ngIf="
+        !cumpleMeta
+      "
+    >
+      ❌ No
+    </span>
+
+  </p>
+
+</div>
+<div class="grafica">
+
+  <h2>
+
+    Ahorro vs Meta
+
+  </h2>
+
+  <canvas
+
+    baseChart
+
+    [data]="
+      ahorroMetaData
+    "
+
+    [type]="
+      barChartType
+    "
+
+  >
+
+  </canvas>
+
+</div>
+<div class="grafica">
+
+  <h2>
+
+    Crecimiento
+    del ahorro
+
+  </h2>
+
+  <canvas
+
+    baseChart
+
+    [data]="
+      crecimientoData
+    "
+
+    [type]="
+      lineaChartType
+    "
+
+  >
+  </canvas>
+
+</div>
+<div class="grafica">
+
+  <h2>
+
+    Comparativa
+    del historial
+
+  </h2>
+
+  <canvas
+
+    baseChart
+
+    [data]="
+      historialData
+    "
+
+    [type]="
+      historialChartType
+    "
+
+  >
+  </canvas>
+
+</div>
+<hr>
+
+<div class="historial-header">
+
+  <h2>
+    Historial de proyecciones
+  </h2>
+
+</div>
+<hr>
+<div class="dashboard">
+
+  <div class="card">
+
+    <h3>
+      Total registros
+    </h3>
+
+    <p>
+      {{ totalRegistros }}
+    </p>
+
+  </div>
+
+  <div class="card">
+
+    <h3>
+      Cumplen meta
+    </h3>
+
+    <p>
+      {{ cumplenMeta }}
+    </p>
+
+  </div>
+
+  <div class="card">
+
+    <h3>
+      Promedio ahorro
+    </h3>
+
+    <p>
+
+      {{
+        promedioAhorro
+        | currency:'COP'
+      }}
+
+    </p>
+
+  </div>
+
+</div>
+<div class="busqueda">
+
+  <input
+    type="text"
+
+    placeholder="
+      Buscar por nombre...
+    "
+
+    [(ngModel)]="
+      textoBusqueda
+    "
+
+    (input)="
+      filtrarProyecciones()
+    "
+  >
+
+</div>
+<div class="ordenamiento">
+
+  <span>
+    Ordenar por:
+  </span>
+
+  <button
+    type="button"
+    (click)="ordenarNombre()"
+  >
+
+    Nombre A-Z
+
+  </button>
+
+  <button
+    type="button"
+    (click)="
+      ordenarMayorAhorro()
+    "
+  >
+
+    Mayor ahorro
+
+  </button>
+
+  <button
+    type="button"
+    (click)="
+      ordenarMenorAhorro()
+    "
+  >
+
+    Menor ahorro
+
+  </button>
+
+</div>
+
+<table>
+
+  <thead>
+
+    <tr>
+
+      <th>
+        Nombre
+      </th>
+
+      <th>
+        Ahorro Total
+      </th>
+
+      <th>
+        Meta
+      </th>
+
+      <th>
+        Cumple
+      </th>
+
+      <th>
+        Acciones
+      </th>
+
+    </tr>
+
+  </thead>
+
+  <tbody>
+
+    <tr
+  *ngFor="
+  let p of
+  proyeccionesFiltradas;
+  trackBy: trackById
+"
+    >
+
+      <td>
+        {{ p.nombre }}
+      </td>
+
+      <td>
+
+        {{
+          p.ahorroTotal
+          | currency:'COP'
+        }}
+
+      </td>
+
+      <td>
+
+        {{
+          p.meta
+          | currency:'COP'
+        }}
+
+      </td>
+
+      <td>
+
+        <span
+          *ngIf="
+            p.cumpleMeta
+          "
+        >
+          ✅ Sí
+        </span>
+
+        <span
+          *ngIf="
+            !p.cumpleMeta
+          "
+        >
+          ❌ No
+        </span>
+
+      </td>
+
+      <td>
+
+        <button
+          type="button"
+          (click)="
+            editarProyeccion(p)
+          "
+        >
+
+          Editar
+
+        </button>
+
+        <button
+          type="button"
+          (click)="
+            eliminarProyeccion(
+              p._id!
+            )
+          "
+        >
+
+          Eliminar
+
+        </button>
+
+      </td>
+
+    </tr>
+
+  </tbody>
+
+</table>
+
