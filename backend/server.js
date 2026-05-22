@@ -3,19 +3,20 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 require('dotenv').config();
 
+const app = express();
+
+const proyeccionRoutes = require('./routes/proyeccion.routes');
+
 const allowedOrigins = [
-
   'http://localhost:4200',
-
   process.env.FRONTEND_URL
 ];
 
-app.use(cors({
+// Middlewares
+app.use(express.json());
 
-  origin: function (
-    origin,
-    callback
-  ) {
+app.use(cors({
+  origin: function (origin, callback) {
 
     if (
       !origin ||
@@ -27,28 +28,35 @@ app.use(cors({
     } else {
 
       callback(
-        new Error(
-          'No permitido por CORS'
-        )
+        new Error('No permitido por CORS')
       );
     }
   }
 }));
-mongoose.connect(
-  process.env.MONGO_URI
-)
+
+// Rutas
+app.use('/api/proyecciones', proyeccionRoutes);
+
+// MongoDB
+mongoose.connect(process.env.MONGO_URI)
 
 .then(() => {
 
-  console.log(
-    'MongoDB conectado 🚀'
-  );
+  console.log('MongoDB conectado 🚀');
+
 })
 
 .catch(err => {
 
-  console.error(
-    'Error MongoDB:',
-    err
-  );
+  console.error('Error MongoDB:', err);
+
+});
+
+// Puerto
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+
+  console.log(`Servidor corriendo en puerto ${PORT}`);
+
 });

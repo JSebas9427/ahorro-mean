@@ -18,8 +18,7 @@ import {
 
 export class ProyeccionService {
 
-  private apiUrl =
-    '/api/proyecciones';
+ private apiUrl = 'https://ahorro-api.onrender.com/api/proyecciones';
 
   constructor(
     private http: HttpClient
